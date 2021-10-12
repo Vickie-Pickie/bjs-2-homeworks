@@ -107,7 +107,7 @@ class Student {
     }
 
     addMark(mark, subject) {
-        if ( mark < 1 && mark > 5) {
+        if ( mark < 1 || mark > 5) {
             return;
         }
 
