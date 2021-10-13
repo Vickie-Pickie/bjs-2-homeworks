@@ -28,6 +28,7 @@ class AlarmClock {
         }
         this.alarmCollection.splice(index, 1);
         return true;
+
     }
 
     getCurrentFormattedTime() {
@@ -49,8 +50,9 @@ class AlarmClock {
         if (timeNow === item.time) {
             item.callback();
         }
-    }
 
+
+    }
     start() {
         if (!this.timerId) {
             this.timerId = setInterval(() => {
@@ -61,6 +63,8 @@ class AlarmClock {
             }, 1000);
         }
     }
+
+
 
     stop() {
         if (this.timerId) {
@@ -80,4 +84,40 @@ class AlarmClock {
         this.stop();
         this.alarmCollection = [];
     }
+
 }
+function getFormattedTime(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    if (hours < 10) {
+        hours = '0' + hours;
+    }
+
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+
+    return `${hours}:${minutes}`;
+}
+
+function addMinutes(date, minutes) {
+    return new Date(date.getTime() + minutes*60000);
+}
+
+
+//TestCases
+
+let alarm = new AlarmClock();
+const now = new Date();
+
+alarm.addClock(getFormattedTime(now), () => console.log('Пора есть!'), 1);
+alarm.addClock(getFormattedTime(addMinutes(now, 1)), () => { console.log('Давай вставай уже'); alarm.removeClock(2) }, 2);
+//alarm.addClock(getFormattedTime(addMinutes(now, 1)), () => console.log('Иди умываться'));
+alarm.addClock(getFormattedTime(addMinutes(now, 2)), () => {
+    console.log('Вставай, а то проспишь');
+    alarm.clearAlarms();
+    alarm.printAlarms();
+}, 3);
+alarm.addClock(getFormattedTime(addMinutes(now, 5)), () => console.log('Вставай, а то проспишь!'), 1);
+alarm.printAlarms();
+alarm.start();
