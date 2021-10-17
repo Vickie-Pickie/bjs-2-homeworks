@@ -9,17 +9,17 @@ function cachingDecoratorNew(func) {
         if (index !== -1) {
             console.log('Из кэша: ' + cache[index].value);
             return `Из кэша: ${cache[index].value}`;
-        } else {
-            let value = func.apply(this, args);
-            cache.push({key, value});
-            //кэш может хранить только 5 последних значений
-            if (cache.length > 5 ) {
-                cache.shift();
-            }
-
-            console.log('Вычисляем: ' + value);
-            return `Вычисляем: ${value}`;
         }
+
+        let value = func.apply(this, args);
+        cache.push({key, value});
+        //кэш может хранить только 5 последних значений
+        if (cache.length > 5 ) {
+            cache.shift();
+        }
+
+        console.log('Вычисляем: ' + value);
+        return `Вычисляем: ${value}`;
     }
 
     return wrapper;
@@ -28,18 +28,17 @@ function cachingDecoratorNew(func) {
 
 //ЗАДАЧА №2
 function debounceDecoratorNew(func, ms) {
-    //для немедленного самого первого вызова флаг = false
-    let isCooldown = false; //функция готова к выполнению, т.е. "остыла"
+    let timeout = null;
+    let isFirstExeс = true; // флаг - первый ли это запуск?
 
     function wrapper(...args) {
-        console.log(isCooldown);
-        //если true - то ф-я ожидает окончания тайм-аута "остывает", другие вызовы игнорируются
-        if (isCooldown) return;
-
-        func.apply(this, args);
-        // ф-я вызвана и теперь будет ждать "остывать" окончания заданного времени ms, все ост-ые вызовы игнорируются
-        isCooldown = true;
-        setTimeout(() => isCooldown = false, ms);
+        if (isFirstExeс) {
+            isFirstExeс = false;
+            func.apply(this, args);
+            return;
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), ms);
     }
 
     return wrapper;
@@ -48,15 +47,23 @@ function debounceDecoratorNew(func, ms) {
 
 //ЗАДАЧА №3
 function debounceDecorator2(func, ms) {
-    let isCooldown = false;
+    let timeout = null;
+    let isFirstExeс = true; // флаг -  самый первый ли это запуск?
     wrapper.count = 0;
-    function wrapper(...args) {
-        wrapper.count++;
-        if (isCooldown) return;
 
-        func.apply(this, args);
-        isCooldown = true;
-        setTimeout(() =>  isCooldown = false, ms);
+    function wrapper(...args) {
+        if (isFirstExeс) {
+            isFirstExeс = false;
+            func.apply(this, args);
+            wrapper.count++;
+
+            return;
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+            wrapper.count++;
+        }, ms);
     }
 
     return wrapper;

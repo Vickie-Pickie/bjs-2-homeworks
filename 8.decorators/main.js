@@ -19,7 +19,8 @@ setTimeout(upgradedSendSignal1,2300);
 setTimeout(upgradedSendSignal1,4400);
 setTimeout(upgradedSendSignal1,4500);
 
-const upgradedSendSignal2 = debounceDecorator2(sendSignal,2000);
+const sendSignal2 = () => console.log('Сигнал послан 2');
+const upgradedSendSignal2 = debounceDecorator2(sendSignal2,2000);
 setTimeout(upgradedSendSignal2);
 setTimeout(upgradedSendSignal2,300);
 setTimeout(upgradedSendSignal2,900);
@@ -28,3 +29,5 @@ setTimeout(upgradedSendSignal2,2300);
 setTimeout(upgradedSendSignal2,4400);
 setTimeout(upgradedSendSignal2,4500);
 setTimeout(() => console.log('count: ' + upgradedSendSignal2.count),4600);
+setTimeout(() => console.log('count: ' + upgradedSendSignal2.count),6600);
+
